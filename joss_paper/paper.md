@@ -43,16 +43,34 @@ bibliography: paper.bib
 
 # Summary
 
-Fetal brain Magnetic Resonance Imaging (MRI) is crucial for assessing neurodevelopment *in utero*. However, analyzing this data presents significant challenges due to fetal motion, low signal-to-noise ratio, and the need for complex multi-step processing, including motion correction, super-resolution reconstruction, and segmentation. While various specialized tools exist for individual steps, integrating them into robust, reproducible, and user-friendly workflows that go from raw image to volume and surface analysis is not straightforward (\autoref{fig:fetpype}). This lack of standardization hinders reproducibility across studies and limits the adoption of advanced analysis techniques for researchers and clinicians. To address these challenges, we introduce `Fetpype`, an open-source Python library designed to streamline and standardize the preprocessing and analysis of fetal brain MRI data.
+Fetal brain Magnetic Resonance Imaging (MRI) is instrumental for assessing neurodevelopment *in utero*. 
+However, analyzing this data presents significant challenges due to fetal motion during the acquisition, 
+and constraints on scan duration inducing low signal-to-noise ratio.
+Complex and specific image processing pipelines are required, involving multiple steps, including motion correction, super-resolution reconstruction, tissue segmentation, and extraction of measures. 
+Various specialized tools exist for individual steps, but open-source, user-friendly workflows that go from raw image to volume and surface analysis are missing.
+This lack of standardization hinders reproducibility across studies and limits the adoption 
+of advanced analysis techniques for researchers and clinicians. 
+We introduce `Fetpype`, an open-source Python library designed to streamline 
+and standardize the preprocessing and analysis of fetal brain MRI data.
+
 
 # Statement of need
 
-`Fetpype` is a Python package integrating several established neuroimaging software principles and tools to create a cohesive and extensible framework, which we summarize in four points. 
+'Fetpype' is a Python package integrating several state-of-the-art established neuroimaging software principles and tools into an open-source, robust, reproducible, and extensible framework.
+This is achieved by implementing the following five core building blocks: 
+
 
 1. **Data Standardization**: `Fetpype` expects input data organized according to the Brain Imaging Data Structure (BIDS) standard [@gorgolewski2016brain], promoting interoperability and simplifying data management. 
-2. **Containerization**: Individual processing tools are encapsulated within Docker or Singularity containers. This ensures reproducibility and reduces installation issues, providing a better experience for the end user. 
-3. **Workflow Management**: The `Nipype` library [@gorgolewski2011nipype] is used to construct processing workflows: it provides a robust interface for combining different steps from different containers or packages, facilitating data caching and parallelization, and allowing pipelines to be easily shareable. 
-4. **Configuration**: Pipeline configuration is managed using simple YAML files and the Hydra library [@Yadan2019Hydra], allowing users to easily select between different modules or parameters without directly modifying the code. The current implementation of Fetpype integrates modules for **data preprocessing**, **super-resolution reconstruction** (NeSVoR [@xu2023nesvor], SVRTK [@kuklisova-murgasova_reconstruction_2012; @uus2022automated], or NiftyMIC [@ebner2020automated]), **segmentation** (BOUNTI [@uus2023bounti] or the developing human connectome project pipeline [@makropoulos2018developing]) and **cortical surface extraction** (using a custom implementation available at https://github.com/fetpype/surface_processing based on [@bazin2005topology; @bazin2007topology; @ma2022cortexode]).
+2. **Containerization**: Individual processing tools are encapsulated within Docker or Singularity containers. This ensures reproducibility and reduces installation issues, providing a better experience for the end user. In addition, this principle makes future extensions of 'Fetpype' with additional processing steps or features by us or other contributors straightforward. 
+3. **Workflow Management**: The processing workflows are based on the `Nipype` library [@gorgolewski2011nipype] that provides a robust interface for combining different processing steps from different containers or packages, facilitating data caching and parallelization.
+The workflows are designed by combining modular processing nodes enforcing the versatility and allowing pipelines to be easily recombined, adapted, or improved. 
+4. **Configuration**: Pipeline configuration is managed using simple YAML files and the Hydra library [@Yadan2019Hydra].
+Users can easily select between different modules or parameters without directly modifying the code. 
+The current implementation of Fetpype integrates modules for **data preprocessing**, **super-resolution reconstruction** (NeSVoR [@xu2023nesvor], SVRTK [@kuklisova-murgasova_reconstruction_2012; @uus2022automated], or NiftyMIC [@ebner2020automated]), **segmentation** (BOUNTI [@uus2023bounti] or the developing human connectome project pipeline [@makropoulos2018developing]) and **cortical surface extraction** (using a custom implementation available at https://github.com/fetpype/surface_processing based on [@bazin2005topology; @bazin2007topology; @ma2022cortexode]).
+All these modules are based on docker or singularity containers released by their authors, ensuring reproducible results aligned with corresponding publications.
+5. **Documentation**: We provide an extensive and detailed documentation website inline with the code.
+The intention is to guide users along the classical installation and running steps, but also to document each processing module and corresponding parameters.
+This allows for the fast appropriation of the building blocks of the proposed workflows, such that tuned or improved workflows can be implemented, tested and shared with minimal efforts.
 
 `Fetpype` was designed to be used by the fetal MRI community by providing a standardized, reproducible and flexible open-source platform for preprocessing and analysis. We believe this tool can facilitate research, improve comparability between studies, and foster collaboration. The pipeline is publicly available on GitHub (https://github.com/fetpype/fetpype), and its open-source nature and modular design facilitate community involvement: researchers can integrate their own tools by creating corresponding `Nipype` interfaces and container wrappers, following the package contribution guidelines.
 
